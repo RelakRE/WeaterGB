@@ -11,7 +11,7 @@ import ru.GB.weathergb.domain.Weather
 import ru.GB.weathergb.viewmodel.AppState
 import ru.GB.weathergb.viewmodel.WeatherViewModel
 
-class DetailsFragment: Fragment() {
+class DetailsFragment : Fragment() {
 
     lateinit var weatherViewModel: WeatherViewModel
     private var _binding: FragmentDetailsBinding? = null
@@ -49,14 +49,14 @@ class DetailsFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         weatherViewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
-        weatherViewModel.getLiveData().observe(viewLifecycleOwner){
+        weatherViewModel.getLiveData().observe(viewLifecycleOwner) {
             onChangeWeatherLiveData(it)
         }
 
         val weather = (arguments?.getParcelable<Weather>(BUNDLE_WEATHER_EXTRA))
         if (weather != null)
             renderData(weather)
-        binding.buttonMoscow.setOnClickListener { weatherViewModel.fetch("Москва")}
+        binding.buttonMoscow.setOnClickListener { weatherViewModel.fetch("Москва") }
     }
 
     private fun onChangeWeatherLiveData(state: AppState) {
