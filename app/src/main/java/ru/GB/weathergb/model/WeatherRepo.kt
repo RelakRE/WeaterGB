@@ -1,10 +1,10 @@
 package ru.GB.weathergb.model
 
+import ru.GB.weathergb.domain.Weather
 import ru.GB.weathergb.domain.getWeatherDomain
-import ru.GB.weathergb.viewmodel.WeatherViewModel
 
 class WeatherRepo : APIWeather {
-    override fun getWeather(cityName: String, weatherViewModel: WeatherViewModel) {
-        weatherViewModel.success(getWeatherDomain(cityName))
+    override fun getWeather(cityName: String, onComplete: (Weather) -> Unit) {
+        onComplete(getWeatherDomain(cityName))
     }
 }
