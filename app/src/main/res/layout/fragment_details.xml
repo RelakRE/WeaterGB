@@ -80,11 +80,21 @@
             android:id="@+id/button_moscow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_15_dp"
+            android:layout_marginTop="16dp"
             android:text="@string/buttonMoscow"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/feelsLikeValue" />
+
+        <Button
+            android:id="@+id/button_spider_man"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Показать человека павука"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_moscow" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

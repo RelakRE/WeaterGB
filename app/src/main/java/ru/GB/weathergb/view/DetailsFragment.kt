@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import ru.GB.weathergb.R
 import ru.GB.weathergb.databinding.FragmentDetailsBinding
 import ru.GB.weathergb.domain.Weather
 import ru.GB.weathergb.viewmodel.AppState
@@ -57,6 +58,12 @@ class DetailsFragment : Fragment() {
         if (weather != null)
             renderData(weather)
         binding.buttonMoscow.setOnClickListener { weatherViewModel.fetch("Москва") }
+        binding.buttonSpiderMan.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.container, DetailsFilmFragment())
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     private fun onChangeWeatherLiveData(state: AppState) {

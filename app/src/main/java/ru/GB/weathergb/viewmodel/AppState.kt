@@ -23,7 +23,7 @@ class WeatherViewModel(
     fun getLiveData() = stateLiveData
 
     fun fetch(cityName: String) {
-        if (currentState !is AppState.DefaultState) return
+        if (currentState !is DefaultState) refresh(cityName)
         currentState = LoadingState()
         WeatherRepo().getWeather(cityName) { weather -> success(weather) }
         stateLiveData.value = currentState
@@ -41,10 +41,11 @@ class WeatherViewModel(
         stateLiveData.postValue(currentState)
     }
 
-//    fun refresh() {
-//        if (currentState !is ErrorState && currentState !is Success) return
-//        currentState = LoadingState()
-//        stateLiveData.value = currentState
-//    }
+    fun refresh(cityName: String) {
+        if (currentState !is ErrorState && currentState !is Success) return
+        currentState = LoadingState()
+        WeatherRepo().getWeather(cityName) { weather -> success(weather) }
+        stateLiveData.value = currentState
+    }
 
 }
