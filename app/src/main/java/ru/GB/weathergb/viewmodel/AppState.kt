@@ -7,27 +7,29 @@ import ru.GB.weathergb.model.WeatherRepo
 import ru.GB.weathergb.viewmodel.AppState.*
 
 sealed class AppState {
-    class DefaultState : AppState()
-    class LoadingState : AppState()
+    object DefaultState : AppState()
+    object LoadingState : AppState()
     class Success(val data: Weather) : AppState()
-    class ErrorState : AppState()
+    object ErrorState : AppState()
 }
 
 class WeatherViewModel(
     private val stateLiveData: MutableLiveData<AppState> = MutableLiveData<AppState>()
 ) : ViewModel() {
 
-    var currentState: AppState = DefaultState()
+    var currentState: AppState = DefaultState
         private set
 
     fun getLiveData() = stateLiveData
 
     fun fetch(cityName: String) {
         if (currentState !is DefaultState) refresh(cityName)
-        currentState = LoadingState()
-        WeatherRepo().getWeather(cityName) { weather -> success(weather) }
+        currentState = LoadingState
+        WeatherRepo().getWeather(cityName) { weather -> parseTheAnswer(weather) }
         stateLiveData.value = currentState
     }
+
+
 
     fun success(data: Weather) {
         if (currentState !is LoadingState) return
@@ -37,15 +39,21 @@ class WeatherViewModel(
 
     fun error() {
         if (currentState !is LoadingState) return
-        currentState = ErrorState()
+        currentState = ErrorState
         stateLiveData.postValue(currentState)
     }
 
     fun refresh(cityName: String) {
         if (currentState !is ErrorState && currentState !is Success) return
-        currentState = LoadingState()
-        WeatherRepo().getWeather(cityName) { weather -> success(weather) }
+        currentState = LoadingState
+        WeatherRepo().getWeather(cityName) { weather -> parseTheAnswer(weather) }
         stateLiveData.value = currentState
     }
+
+    private fun parseTheAnswer(weather: Weather?) {
+        if (weather != null) success(weather)
+        else error()
+    }
+
 
 }

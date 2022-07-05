@@ -21,13 +21,10 @@ data class City(
 private fun getDefaultCity() = City("Москва", 55.755826, 37.617299900000035)
 
 // как бы основная функция, которая получает название города, а возвращает погоду или Null
-fun getWeatherDomain(CityName: String): Weather {
+fun getWeatherDomain(CityName: String): Weather? {
     return if (CityName == "Москва") Weather(
         getDefaultCity(), Random.nextInt(10, 25),
         Random.nextInt(10, 25)
     )
-    else Weather(
-        getDefaultCity(), Random.nextInt(10, 25),
-        Random.nextInt(10, 25)
-    )
+    else null
 }
