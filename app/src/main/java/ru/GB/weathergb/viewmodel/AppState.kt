@@ -2,6 +2,7 @@ package ru.GB.weathergb.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import ru.GB.weathergb.domain.City
 import ru.GB.weathergb.domain.Weather
 import ru.GB.weathergb.model.WeatherRepo
 import ru.GB.weathergb.viewmodel.AppState.*
@@ -25,10 +26,9 @@ class WeatherViewModel(
     fun fetch(cityName: String) {
         if (currentState !is DefaultState) refresh(cityName)
         currentState = LoadingState
-        WeatherRepo().getWeather(cityName) { weather -> parseTheAnswer(weather) }
+        WeatherRepo().getWeather(City.buildCity(cityName)) { weather -> parseTheAnswer(weather) }
         stateLiveData.value = currentState
     }
-
 
 
     fun success(data: Weather) {
@@ -46,7 +46,7 @@ class WeatherViewModel(
     fun refresh(cityName: String) {
         if (currentState !is ErrorState && currentState !is Success) return
         currentState = LoadingState
-        WeatherRepo().getWeather(cityName) { weather -> parseTheAnswer(weather) }
+        WeatherRepo().getWeather(City.buildCity(cityName)) { weather -> parseTheAnswer(weather) }
         stateLiveData.value = currentState
     }
 
