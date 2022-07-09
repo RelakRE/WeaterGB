@@ -24,7 +24,7 @@ class WeatherViewModel(
     fun getLiveData() = stateLiveData
 
     fun fetch(cityName: String) {
-        if (currentState !is DefaultState) refresh(cityName)
+        if (currentState !is DefaultState) {refresh(cityName); return}
         currentState = LoadingState
         WeatherRepo().getWeather(City.buildCity(cityName)) { weather -> parseTheAnswer(weather) }
         stateLiveData.value = currentState
@@ -49,6 +49,7 @@ class WeatherViewModel(
         WeatherRepo().getWeather(City.buildCity(cityName)) { weather -> parseTheAnswer(weather) }
         stateLiveData.value = currentState
     }
+
 
     private fun parseTheAnswer(weather: Weather?) {
         if (weather != null) success(weather)

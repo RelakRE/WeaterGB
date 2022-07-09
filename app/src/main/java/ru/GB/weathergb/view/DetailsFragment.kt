@@ -83,6 +83,10 @@ class DetailsFragment : Fragment() {
     }
 
     private fun onChangeWeatherLiveData(state: AppState) {
+
+        binding.loading.visibility = if (state == AppState.LoadingState) View.VISIBLE
+        else View.INVISIBLE
+
         when (state) {
             is AppState.Success -> renderData(state.data)
             is AppState.ErrorState -> requireView().showText("Поломка")

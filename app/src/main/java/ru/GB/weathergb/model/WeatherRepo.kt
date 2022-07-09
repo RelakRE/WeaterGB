@@ -10,7 +10,8 @@ class WeatherRepo : APIWeather {
 
     override fun getWeather(city: City, onComplete: (Weather?) -> Unit) {
         requestWeather(city.lat, city.lon){
-            onComplete(Weather(city, it.fact.temp, it.fact.feelsLike))
+            if (it == null) onComplete(null)
+            else onComplete(Weather(city, it.fact.temp, it.fact.feelsLike))
         }
     }
 }
