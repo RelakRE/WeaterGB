@@ -9,8 +9,9 @@ import android.net.ConnectivityManager.CONNECTIVITY_ACTION
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import ru.GB.weathergb.databinding.ActivityMainBinding
-import ru.GB.weathergb.view.DetailsFragment
+import ru.GB.weathergb.view.CitiesListFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        supportFragmentManager.beginTransaction().add(R.id.container, DetailsFragment()).commit()
+        supportFragmentManager.commit { add(R.id.container, CitiesListFragment()) }
 
         initBroadcast()
 

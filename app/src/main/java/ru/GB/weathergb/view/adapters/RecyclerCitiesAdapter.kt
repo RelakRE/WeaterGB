@@ -5,20 +5,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.GB.weathergb.databinding.RecyckerItemCityBinding
+import ru.GB.weathergb.domain.City
 
 class RecyclerCitiesAdapter(
-    private val dataList: List<String>,
-    private val clickCallBack: (String) -> Unit
+    private val dataList: List<City>,
+    private val callbacks: ItemActionRecycler
 ) : RecyclerView.Adapter<RecyclerCitiesAdapter.Holder>() {
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val binding = RecyckerItemCityBinding.bind(itemView)
-        val twCity = binding.itemCityName
+        private val twCity = binding.itemCityName
 
         fun bind(cityName: String) {
             twCity.text = cityName
-            binding.root.setOnClickListener {clickCallBack(cityName)}
+            binding.root.setOnClickListener {callbacks.clickOnItem(cityName)}
         }
     }
 
@@ -29,11 +30,10 @@ class RecyclerCitiesAdapter(
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.twCity.text = dataList[position]
+        holder.bind(dataList[position].name)
     }
 
     override fun getItemCount(): Int {
         return dataList.size
     }
-
 }
