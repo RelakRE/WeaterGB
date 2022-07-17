@@ -12,21 +12,23 @@ class RecyclerCitiesAdapter(
     private val callbacks: ItemActionRecycler
 ) : RecyclerView.Adapter<RecyclerCitiesAdapter.Holder>() {
 
-    inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class Holder(private val binding: RecyckerItemCityBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        private val binding = RecyckerItemCityBinding.bind(itemView)
         private val twCity = binding.itemCityName
 
         fun bind(cityName: String) {
             twCity.text = cityName
-            binding.root.setOnClickListener {callbacks.clickOnItem(cityName)}
+            binding.root.setOnClickListener { callbacks.clickOnItem(cityName) }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
 
-        val binding = RecyckerItemCityBinding.inflate(LayoutInflater.from(parent.context))
-        return Holder(binding.root)
+        val binding =
+            RecyckerItemCityBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+        return Holder(binding)
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
