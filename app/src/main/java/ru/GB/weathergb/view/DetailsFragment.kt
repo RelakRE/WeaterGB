@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import ru.GB.weathergb.R
 import ru.GB.weathergb.databinding.FragmentDetailsBinding
+import ru.GB.weathergb.domain.City
 import ru.GB.weathergb.domain.Weather
 import ru.GB.weathergb.viewmodel.AppState
 import ru.GB.weathergb.viewmodel.WeatherViewModel
@@ -29,6 +30,7 @@ class DetailsFragment : Fragment() {
 
     companion object {
         const val BUNDLE_WEATHER_EXTRA = "WeatherBundle"
+        const val BUNDLE_CITY_EXTRA = "CityBundle"
         fun newInstance(weather: Weather): DetailsFragment {
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_WEATHER_EXTRA, weather)
@@ -36,9 +38,17 @@ class DetailsFragment : Fragment() {
             detailsFragment.arguments = bundle
             return detailsFragment
         }
+
+        fun newInstance(city: City): DetailsFragment {
+            val bundle = Bundle()
+            bundle.putParcelable(BUNDLE_CITY_EXTRA, city)
+            val detailsFragment = DetailsFragment()
+            detailsFragment.arguments = bundle
+            return detailsFragment
+        }
     }
 
-        override fun onCreateView(
+    override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,11 +60,17 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initializeViewModel()
+        bindButtons()
+
         arguments?.getParcelable<Weather>(BUNDLE_WEATHER_EXTRA)
             ?.also { renderData(it) } //also { ::renderData }
 
-        initializeViewModel()
-        bindButtons()
+        arguments?.getParcelable<City>(BUNDLE_CITY_EXTRA)
+            ?.also {
+                renderData(it)
+                weatherViewModel.fetch(it)
+            }
 
     }
 
@@ -68,7 +84,7 @@ class DetailsFragment : Fragment() {
     private fun bindButtons() {
         with(binding)
         {
-            buttonMoscow.setOnClickListener { weatherViewModel.fetch("Москва") }
+            buttonMoscow.setOnClickListener { weatherViewModel.fetch(City.buildCity("Москва")) }
             buttonSpiderMan.setOnClickListener {
                 replaceFragmentWith(DetailsFilmFragment())
             }
@@ -102,6 +118,13 @@ class DetailsFragment : Fragment() {
         }
     }
 
+    private fun renderData(city: City) {
+        with(binding) {
+            cityName.text = city.name
+            cityCoordinates.text = "${city.lat}/${city.lon}"
+        }
+    }
+
     //region extensions
 
     private fun View.showText(text: String, vararg actions: View.OnClickListener?) {
@@ -121,6 +144,10 @@ class DetailsFragment : Fragment() {
             text,
             Snackbar.LENGTH_LONG
         ).setAction(pair.first, pair.second).show()
+    }
+
+    fun uploadWeather(city: City) {
+        weatherViewModel.fetch(city)
     }
 
     //endregion

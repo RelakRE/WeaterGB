@@ -1,7 +1,6 @@
 package ru.GB.weathergb.view.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.GB.weathergb.databinding.RecyckerItemCityBinding
@@ -17,9 +16,9 @@ class RecyclerCitiesAdapter(
 
         private val twCity = binding.itemCityName
 
-        fun bind(cityName: String) {
-            twCity.text = cityName
-            binding.root.setOnClickListener { callbacks.clickOnItem(cityName) }
+        fun bind(city: City) {
+            twCity.text = city.name
+            binding.root.setOnClickListener { callbacks.clickOnItem(city) }
         }
     }
 
@@ -32,7 +31,7 @@ class RecyclerCitiesAdapter(
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(dataList[position].name)
+        holder.bind(dataList[position])
     }
 
     override fun getItemCount(): Int {
