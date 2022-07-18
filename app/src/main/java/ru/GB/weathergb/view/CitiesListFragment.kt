@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.GB.weathergb.R
 import ru.GB.weathergb.databinding.FragmentCityListBinding
@@ -17,7 +19,8 @@ import ru.GB.weathergb.viewmodel.WeatherViewModel
 
 class CitiesListFragment : Fragment() {
 
-    private lateinit var weatherViewModel: WeatherViewModel
+//    private lateinit var weatherViewModel: WeatherViewModel
+    private val weatherViewModel: WeatherViewModel by viewModels()
     private var _binding: FragmentCityListBinding? = null
     private val binding: FragmentCityListBinding
         get() = _binding!!

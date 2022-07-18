@@ -15,17 +15,19 @@ import kotlin.reflect.typeOf
 
 object WeatherLoader {
 
-    const val WEATHER_API_KEY = "X-Yandex-API-Key"
+    private const val WEATHER_API_KEY = "X-Yandex-API-Key"
 
     fun requestWeather(lat: Double, lon: Double, onResponse: (WeatherDTO?) -> Unit) {
         val uri = URL("https://api.weather.yandex.ru/v2/informers?lat=${lat}&lon=${lon}")
+        var myConnection:HttpsURLConnection? = null
 
-        val myConnection = uri.openConnection() as HttpsURLConnection
-        myConnection.readTimeout = 5000
-        myConnection.addRequestProperty(WEATHER_API_KEY, BuildConfig.WEATHER_API_KEY)
         Thread {
             try {
-                val reader = BufferedReader(InputStreamReader(myConnection.inputStream))
+                myConnection = uri.openConnection() as HttpsURLConnection
+                myConnection!!.readTimeout = 5000
+                myConnection!!.addRequestProperty(WEATHER_API_KEY, BuildConfig.WEATHER_API_KEY)
+
+                val reader = myConnection!!.inputStream.bufferedReader()
                 val weatherDTO = Gson().fromJson(getLines(reader), WeatherDTO::class.java)
                 onResponse(weatherDTO)
             } catch (e: JSONException) {
@@ -40,19 +42,12 @@ object WeatherLoader {
             }catch (e: Exception){
                 Log.e("requestWeather Error Exception", e.message.toString()
                         + " Необработан тип ошибки ${e::class.qualifiedName}")
-
                 onResponse(null)
             }
             finally {
-                myConnection.disconnect()
+                myConnection?.disconnect()
             }
-
         }.start()
     }
-
-    fun requestWeatherBroadcast(){
-
-    }
-
 }
 

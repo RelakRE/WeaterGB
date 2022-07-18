@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import ru.GB.weathergb.R
@@ -16,15 +18,14 @@ import ru.GB.weathergb.viewmodel.WeatherViewModel
 
 class DetailsFragment : Fragment() {
 
-    private lateinit var weatherViewModel: WeatherViewModel
+//    private lateinit var weatherViewModel: WeatherViewModel
+    private val weatherViewModel: WeatherViewModel by viewModels()
     private var _binding: FragmentDetailsBinding? = null
     private val binding: FragmentDetailsBinding
-        get() {
-            return _binding!!
-        }
+        get() = _binding!!
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 
@@ -75,7 +76,7 @@ class DetailsFragment : Fragment() {
     }
 
     private fun initializeViewModel() {
-        weatherViewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
+//        weatherViewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
         weatherViewModel.getLiveData().observe(viewLifecycleOwner) {
             onChangeWeatherLiveData(it)
         }
@@ -100,8 +101,7 @@ class DetailsFragment : Fragment() {
 
     private fun onChangeWeatherLiveData(state: AppState) {
 
-        binding.loading.visibility = if (state == AppState.LoadingState) View.VISIBLE
-        else View.INVISIBLE
+        binding.loading.isVisible = state == AppState.LoadingState
 
         when (state) {
             is AppState.Success -> renderData(state.data)
@@ -123,6 +123,7 @@ class DetailsFragment : Fragment() {
             cityName.text = city.name
             cityCoordinates.text = "${city.lat}/${city.lon}"
         }
+        uploadWeather(city)
     }
 
     //region extensions
@@ -146,7 +147,7 @@ class DetailsFragment : Fragment() {
         ).setAction(pair.first, pair.second).show()
     }
 
-    fun uploadWeather(city: City) {
+    private fun uploadWeather(city: City) {
         weatherViewModel.fetch(city)
     }
 

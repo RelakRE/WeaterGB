@@ -11,12 +11,10 @@ class DetailsFilmFragment : Fragment() {
 
     private var _binding: FragmentFilmDetailsBinding? = null
     private val binding: FragmentFilmDetailsBinding
-        get() {
-            return _binding!!
-        }
+        get() = _binding!!
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 
