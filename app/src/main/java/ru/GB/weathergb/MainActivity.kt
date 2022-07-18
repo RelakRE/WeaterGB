@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import ru.GB.weathergb.databinding.ActivityMainBinding
-import ru.GB.weathergb.view.CitiesListFragment
+import ru.GB.weathergb.view.fragments.CitiesListFragment
 
 class MainActivity : AppCompatActivity() {
 
