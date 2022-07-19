@@ -1,4 +1,4 @@
-package ru.GB.weathergb.view
+package ru.GB.weathergb.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

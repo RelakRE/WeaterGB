@@ -1,5 +1,9 @@
-package ru.GB.weathergb.view
+package ru.GB.weathergb.view.fragments
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,29 +11,36 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import ru.GB.weathergb.R
 import ru.GB.weathergb.databinding.FragmentDetailsBinding
 import ru.GB.weathergb.domain.City
 import ru.GB.weathergb.domain.Weather
+import ru.GB.weathergb.model.WeatherRepo
 import ru.GB.weathergb.viewmodel.AppState
 import ru.GB.weathergb.viewmodel.WeatherViewModel
 
 class DetailsFragment : Fragment() {
 
-//    private lateinit var weatherViewModel: WeatherViewModel
+    //    private lateinit var weatherViewModel: WeatherViewModel
     private val weatherViewModel: WeatherViewModel by viewModels()
     private var _binding: FragmentDetailsBinding? = null
     private val binding: FragmentDetailsBinding
         get() = _binding!!
 
+    lateinit var uploadReceiver: BroadcastReceiver
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        view?.context?.unregisterReceiver(uploadReceiver)
     }
 
     companion object {
+
+        const val WEATHER_INTENT_KEY = "WEATHER_INTENT_KEY"
+        const val WEATHER_INTENT_NAME = "WEATHER_INTENT_NAME"
+        const val REPO_TYPE = "BRO"
+
         const val BUNDLE_WEATHER_EXTRA = "WeatherBundle"
         const val BUNDLE_CITY_EXTRA = "CityBundle"
         fun newInstance(weather: Weather): DetailsFragment {
@@ -70,7 +81,10 @@ class DetailsFragment : Fragment() {
         arguments?.getParcelable<City>(BUNDLE_CITY_EXTRA)
             ?.also {
                 renderData(it)
-                weatherViewModel.fetch(it)
+                when (REPO_TYPE) {
+                    "BRO" -> BroadcastReceiverRepoImpl(it)
+                    else -> weatherViewModel.fetch(it)
+                }
             }
 
     }
@@ -123,7 +137,12 @@ class DetailsFragment : Fragment() {
             cityName.text = city.name
             cityCoordinates.text = "${city.lat}/${city.lon}"
         }
-        uploadWeather(city)
+
+        when (REPO_TYPE) {
+            "BRO" -> return
+            else -> uploadWeather(city)
+        }
+
     }
 
     //region extensions
@@ -150,6 +169,39 @@ class DetailsFragment : Fragment() {
     private fun uploadWeather(city: City) {
         weatherViewModel.fetch(city)
     }
+
+    //endregion
+
+    //region BroadcastReceiver
+
+    private fun BroadcastReceiverRepoImpl(city: City) {
+        regReceiver()
+        WeatherRepo().getWeather(city) { weather ->
+            requireActivity().sendBroadcast(
+                Intent(WEATHER_INTENT_NAME).putWeather(weather)
+            )
+        }
+    }
+
+    private fun regReceiver() {
+        uploadReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                intent?.getParcelableExtra<Weather>(WEATHER_INTENT_KEY)?.also {
+                    parseTheAnswer(it)
+                }
+            }
+        }
+        requireContext().registerReceiver(
+            uploadReceiver,
+            IntentFilter(WEATHER_INTENT_NAME)
+        )
+    }
+
+    private fun parseTheAnswer(weather: Weather?) {
+        if (weather != null) renderData(weather)
+    }
+
+    private fun Intent.putWeather(weather: Weather?) = this.putExtra(WEATHER_INTENT_KEY, weather)
 
     //endregion
 

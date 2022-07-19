@@ -1,5 +1,9 @@
 package ru.GB.weathergb.viewmodel
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.GB.weathergb.domain.City
@@ -27,9 +31,9 @@ class WeatherViewModel(
         if (currentState !is DefaultState) {refresh(city); return}
         currentState = LoadingState
         WeatherRepo().getWeather(city) { weather -> parseTheAnswer(weather) }
+
         stateLiveData.value = currentState
     }
-
 
     fun success(data: Weather) {
         if (currentState !is LoadingState) return
@@ -55,6 +59,4 @@ class WeatherViewModel(
         if (weather != null) success(weather)
         else error()
     }
-
-
 }
