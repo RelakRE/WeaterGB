@@ -2,16 +2,11 @@ package ru.GB.weathergb.model
 
 import android.util.Log
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import okhttp3.*
 import okio.IOException
 import org.json.JSONException
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import ru.GB.weathergb.BuildConfig
 import ru.GB.weathergb.model.WeatherDTO.WeatherDTO
-import ru.GB.weathergb.model.retrofit.WeatherAPI
 import ru.GB.weathergb.model.retrofit.WeatherRetrofit
 import ru.GB.weathergb.utils.getLines
 import java.net.MalformedURLException
@@ -79,8 +74,8 @@ object WeatherLoader {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val serverResponse = response.body.string()
-                if (response.isSuccessful && serverResponse.isNotEmpty()) {
+                val serverResponse = response.body?.string()
+                if (response.isSuccessful && serverResponse != null) {
                     onResponse(Gson().fromJson(serverResponse, WeatherDTO::class.java))
                 } else onResponse(null)
             }

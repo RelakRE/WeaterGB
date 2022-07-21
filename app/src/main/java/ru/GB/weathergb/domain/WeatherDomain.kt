@@ -16,12 +16,12 @@ data class City(
     val name: String,
     val lat: Double,
     val lon: Double
-) : Parcelable{
+) : Parcelable {
 
     companion object {
-        fun buildCity(cityName: String):City{
+        fun buildCity(cityName: String): City {
             return if (cityName == "Москва") City("Москва", 55.4507, 37.3656)
-            else City("no name", 1.0,2.0)
+            else City("no name", 1.0, 2.0)
         }
     }
 }

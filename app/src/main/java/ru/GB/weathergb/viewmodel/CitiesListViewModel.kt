@@ -10,11 +10,11 @@ class CitiesListViewModel(
 
     fun getLDList() = listLiveData
 
-    fun addToEnd(city: City){
+    fun addToEnd(city: City) {
         listLiveData.postValue(listLiveData.value?.plus(city) ?: listOf(city))
     }
 
-    fun addListToEnd(list: List<City>){
+    fun addListToEnd(list: List<City>) {
         listLiveData.postValue(listLiveData.value?.plus(list) ?: list)
     }
 }

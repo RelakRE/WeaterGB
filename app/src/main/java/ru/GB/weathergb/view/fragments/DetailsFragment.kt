@@ -8,10 +8,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import coil.api.load
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_details.*
 import ru.GB.weathergb.R
 import ru.GB.weathergb.databinding.FragmentDetailsBinding
 import ru.GB.weathergb.domain.City
@@ -39,10 +43,11 @@ class DetailsFragment : Fragment() {
 
         const val WEATHER_INTENT_KEY = "WEATHER_INTENT_KEY"
         const val WEATHER_INTENT_NAME = "WEATHER_INTENT_NAME"
-        const val REPO_TYPE = "BRO"
+        const val REPO_TYPE = ""
 
         const val BUNDLE_WEATHER_EXTRA = "WeatherBundle"
         const val BUNDLE_CITY_EXTRA = "CityBundle"
+
         fun newInstance(weather: Weather): DetailsFragment {
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_WEATHER_EXTRA, weather)
@@ -130,6 +135,10 @@ class DetailsFragment : Fragment() {
             feelsLikeValue.text = weather.feelsLike.toString()
             cityCoordinates.text = "${weather.city.lat}/${weather.city.lon}"
         }
+        weather_icon.load("https://res.cloudinary.com/demo/video/upload/dog.png")
+        weather_icon.scaleType = ImageView.ScaleType.FIT_XY
+//        Glide.with(this).load("https://res.cloudinary.com/demo/video/upload/dog.png")
+//            .into(weather_icon);
     }
 
     private fun renderData(city: City) {
