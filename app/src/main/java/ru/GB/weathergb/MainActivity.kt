@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.commit { add(R.id.container, CitiesListFragment()) }
 
         initBroadcast()
-
     }
 
     private fun initBroadcast() {

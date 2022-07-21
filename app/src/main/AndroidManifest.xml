@@ -25,6 +25,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".view.testReceiver.BroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="broadcastsender.message"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
