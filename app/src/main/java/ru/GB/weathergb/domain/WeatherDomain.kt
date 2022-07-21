@@ -8,7 +8,8 @@ import kotlin.random.Random
 class Weather(
     val city: City,
     val temperature: Int,
-    val feelsLike: Int
+    val feelsLike: Int,
+    val icon: String? = null
 ) : Parcelable
 
 @Parcelize

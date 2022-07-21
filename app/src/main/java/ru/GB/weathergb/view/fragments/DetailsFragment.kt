@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import androidx.fragment.app.viewModels
 import coil.api.load
 import coil.size.Scale
 import com.bumptech.glide.Glide
+import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_details.*
 import ru.GB.weathergb.R
@@ -136,9 +138,17 @@ class DetailsFragment : Fragment() {
             feelsLikeValue.text = weather.feelsLike.toString()
             cityCoordinates.text = "${weather.city.lat}/${weather.city.lon}"
         }
-        weather_icon.load("https://res.cloudinary.com/demo/video/upload/dog.png"){
-            scale(Scale.FIT)
+        weather.icon?.also {
+            GlideToVectorYou.justLoadImage(
+                requireActivity(),
+                Uri.parse("https://yastatic.net/weather/i/icons/blueye/color/svg/${it}.svg"),
+                weather_icon
+            )
         }
+
+//        weather_icon.load("https://res.cloudinary.com/demo/video/upload/dog.png"){
+//            scale(Scale.FIT)
+//        }
 //        Glide.with(this).load("https://res.cloudinary.com/demo/video/upload/dog.png")
 //            .into(weather_icon);
     }
