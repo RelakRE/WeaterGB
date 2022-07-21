@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import coil.api.load
+import coil.size.Scale
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_details.*
@@ -135,8 +136,9 @@ class DetailsFragment : Fragment() {
             feelsLikeValue.text = weather.feelsLike.toString()
             cityCoordinates.text = "${weather.city.lat}/${weather.city.lon}"
         }
-        weather_icon.load("https://res.cloudinary.com/demo/video/upload/dog.png")
-        weather_icon.scaleType = ImageView.ScaleType.FIT_XY
+        weather_icon.load("https://res.cloudinary.com/demo/video/upload/dog.png"){
+            scale(Scale.FIT)
+        }
 //        Glide.with(this).load("https://res.cloudinary.com/demo/video/upload/dog.png")
 //            .into(weather_icon);
     }
