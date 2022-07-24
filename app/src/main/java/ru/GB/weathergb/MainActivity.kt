@@ -1,15 +1,14 @@
 package ru.GB.weathergb
 
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.ConnectivityManager.CONNECTIVITY_ACTION
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.commit
 import ru.GB.weathergb.databinding.ActivityMainBinding
 import ru.GB.weathergb.model.sharedPreferences.WeatherSP
@@ -27,17 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        addMenuProvider(object : MenuProvider{
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_details, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return true
-            }
-        })
-
-        if (WeatherSP.haveTheLastWeatherSP()) goToDetailsFragment () else goToCitiesListFragment()
+        if (WeatherSP.haveTheLastWeatherSP()) goToDetailsFragment() else goToCitiesListFragment()
 
         initBroadcast()
     }

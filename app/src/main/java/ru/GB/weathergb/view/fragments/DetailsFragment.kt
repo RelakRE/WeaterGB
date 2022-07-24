@@ -6,11 +6,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.google.android.material.snackbar.Snackbar
@@ -31,11 +31,11 @@ class DetailsFragment : Fragment() {
     private val binding: FragmentDetailsBinding
         get() = _binding!!
 
-    lateinit var uploadReceiver: BroadcastReceiver
+    private var uploadReceiver: BroadcastReceiver? = null
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        view?.context?.unregisterReceiver(uploadReceiver)
+        uploadReceiver?.also { view?.context?.unregisterReceiver(it) }
     }
 
     companion object {
@@ -70,7 +70,15 @@ class DetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDetailsBinding.inflate(inflater)
+        configToolbar()
         return binding.root
+    }
+
+    private fun configToolbar() {
+        binding.toolbarDetails.setOnMenuItemClickListener {
+            if (it.itemId == R.id.showList) goToListFragment()
+            return@setOnMenuItemClickListener true
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -91,12 +99,29 @@ class DetailsFragment : Fragment() {
                     else -> weatherViewModel.fetch(it)
                 }
             }
-
     }
 
 //    private fun addMenu() {
-//        requireActivity().addMenuProvider()
+//        requireActivity().addMenuProvider(object : MenuProvider {
+//            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+//                menuInflater.inflate(R.menu.menu_details, menu)
+//            }
+//
+//            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+//                if (menuItem.itemId == R.id.showList) goToListFragment()
+//                return true
+//            }
+//        })
 //    }
+
+    private fun goToListFragment() {
+        requireActivity().supportFragmentManager.commit {
+            replace(
+                R.id.container,
+                CitiesListFragment()
+            )
+        }
+    }
 
     private fun initializeViewModel() {
 //        weatherViewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
