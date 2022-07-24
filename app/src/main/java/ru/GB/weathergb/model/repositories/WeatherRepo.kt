@@ -1,4 +1,4 @@
-package ru.GB.weathergb.model
+package ru.GB.weathergb.model.repositories
 
 import ru.GB.weathergb.domain.City
 import ru.GB.weathergb.domain.Weather

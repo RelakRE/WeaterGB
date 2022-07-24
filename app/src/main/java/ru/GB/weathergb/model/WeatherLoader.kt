@@ -55,7 +55,6 @@ object WeatherLoader {
                 }
 
             })
-
     }
 
     private fun okHttpRequest(lat: Double, lon: Double, onResponse: (WeatherDTO?) -> Unit) {

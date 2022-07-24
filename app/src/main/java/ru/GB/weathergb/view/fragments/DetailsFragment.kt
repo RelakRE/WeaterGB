@@ -9,13 +9,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import coil.api.load
-import coil.size.Scale
-import com.bumptech.glide.Glide
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_details.*
@@ -23,7 +19,7 @@ import ru.GB.weathergb.R
 import ru.GB.weathergb.databinding.FragmentDetailsBinding
 import ru.GB.weathergb.domain.City
 import ru.GB.weathergb.domain.Weather
-import ru.GB.weathergb.model.WeatherRepo
+import ru.GB.weathergb.model.repositories.WeatherRepo
 import ru.GB.weathergb.viewmodel.AppState
 import ru.GB.weathergb.viewmodel.WeatherViewModel
 
@@ -51,7 +47,7 @@ class DetailsFragment : Fragment() {
         const val BUNDLE_WEATHER_EXTRA = "WeatherBundle"
         const val BUNDLE_CITY_EXTRA = "CityBundle"
 
-        fun newInstance(weather: Weather): DetailsFragment {
+        fun newInstance(weather: Weather?): DetailsFragment {
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_WEATHER_EXTRA, weather)
             val detailsFragment = DetailsFragment()
@@ -82,6 +78,7 @@ class DetailsFragment : Fragment() {
 
         initializeViewModel()
         bindButtons()
+//        addMenu()
 
         arguments?.getParcelable<Weather>(BUNDLE_WEATHER_EXTRA)
             ?.also { renderData(it) } //also { ::renderData }
@@ -96,6 +93,10 @@ class DetailsFragment : Fragment() {
             }
 
     }
+
+//    private fun addMenu() {
+//        requireActivity().addMenuProvider()
+//    }
 
     private fun initializeViewModel() {
 //        weatherViewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)

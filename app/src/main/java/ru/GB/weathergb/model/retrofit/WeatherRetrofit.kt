@@ -1,6 +1,5 @@
 package ru.GB.weathergb.model.retrofit
 
-import android.app.Application
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -9,18 +8,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
-class WeatherRetrofit : Application() {
+object WeatherRetrofit {
 
-    companion object {
-        lateinit var weatherAPI: WeatherAPI
-    }
+    lateinit var weatherAPI: WeatherAPI
 
-    override fun onCreate() {
-        super.onCreate()
-        configureRetrofit()
-    }
-
-    private fun configureRetrofit() {
+    fun configureRetrofit() {
         weatherAPI = Retrofit.Builder()
             .baseUrl("https://api.weather.yandex.ru/")
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
@@ -36,7 +28,7 @@ class WeatherRetrofit : Application() {
         return httpClient.build()
     }
 
-    inner class WeatherApiInterceptor : Interceptor {
+    class WeatherApiInterceptor : Interceptor {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
             return chain.proceed(chain.request())

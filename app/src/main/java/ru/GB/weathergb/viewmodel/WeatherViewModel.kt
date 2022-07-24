@@ -4,7 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.GB.weathergb.domain.City
 import ru.GB.weathergb.domain.Weather
-import ru.GB.weathergb.model.WeatherRepo
+import ru.GB.weathergb.model.repositories.WeatherRepo
+import ru.GB.weathergb.model.sharedPreferences.WeatherSP
 import ru.GB.weathergb.viewmodel.AppState.*
 
 sealed class AppState {
@@ -52,9 +53,11 @@ class WeatherViewModel(
         stateLiveData.value = currentState
     }
 
-
     private fun parseTheAnswer(weather: Weather?) {
-        if (weather != null) success(weather)
+        if (weather != null) {
+            success(weather)
+            WeatherSP.refreshLastWeather(weather)
+        }
         else error()
     }
 }
