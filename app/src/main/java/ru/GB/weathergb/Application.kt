@@ -2,6 +2,7 @@ package ru.GB.weathergb
 
 import android.app.Application
 import ru.GB.weathergb.model.retrofit.WeatherRetrofit
+import ru.GB.weathergb.model.room.WeatherHistory
 import ru.GB.weathergb.model.sharedPreferences.WeatherSP
 
 class Application : Application() {
@@ -9,6 +10,7 @@ class Application : Application() {
     override fun onCreate() {
         super.onCreate()
         WeatherRetrofit.configureRetrofit()
-        WeatherSP.configureSharedPreferences(this.applicationContext)
+        WeatherSP.configureSharedPreferences(applicationContext)
+        WeatherHistory.configureRoom(applicationContext)
     }
 }
