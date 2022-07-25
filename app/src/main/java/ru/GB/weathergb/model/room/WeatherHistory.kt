@@ -2,6 +2,7 @@ package ru.GB.weathergb.model.room
 
 import android.content.Context
 import androidx.room.*
+import java.time.LocalDate
 
 object WeatherHistory {
 
@@ -39,7 +40,8 @@ data class HistoryEntity(
     val city: String,
     val temperature: Int,
     val condition: String,
-    val icon: String
+    val icon: String,
+    val date: LocalDate
 )
 
 @Dao
@@ -50,6 +52,9 @@ interface HistoryDao {
 
     @Query("SELECT * FROM HistoryEntity WHERE city LIKE :city")
     fun getDataByWord(city: String): List<HistoryEntity>
+
+    @Query("SELECT COUNT(1) FROM HistoryEntity")
+    fun getNumberOfRows(): Int
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(entity: HistoryEntity)
