@@ -7,7 +7,7 @@ import android.util.Log
 
 const val TEXT_KEY = "TEXT_KEY"
 
-class BroadcastReceiver: BroadcastReceiver() {
+class BroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         intent?.getStringExtra(TEXT_KEY)?.also { Log.d("Пришел интент", it) }
     }

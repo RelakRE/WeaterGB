@@ -6,8 +6,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
-import androidx.core.view.MenuProvider
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -76,7 +77,10 @@ class DetailsFragment : Fragment() {
 
     private fun configToolbar() {
         binding.toolbarDetails.setOnMenuItemClickListener {
-            if (it.itemId == R.id.showList) goToListFragment()
+            when (it.itemId) {
+                R.id.showList -> goToListFragment()
+                R.id.show_history -> goToHistoryFragment()
+            }
             return@setOnMenuItemClickListener true
         }
     }
@@ -101,25 +105,22 @@ class DetailsFragment : Fragment() {
             }
     }
 
-//    private fun addMenu() {
-//        requireActivity().addMenuProvider(object : MenuProvider {
-//            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-//                menuInflater.inflate(R.menu.menu_details, menu)
-//            }
-//
-//            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-//                if (menuItem.itemId == R.id.showList) goToListFragment()
-//                return true
-//            }
-//        })
-//    }
-
     private fun goToListFragment() {
         requireActivity().supportFragmentManager.commit {
             replace(
                 R.id.container,
                 CitiesListFragment()
             )
+        }
+    }
+
+    private fun goToHistoryFragment() {
+        requireActivity().supportFragmentManager.commit {
+            replace(
+                R.id.container,
+                HistoryFragment()
+            )
+                .addToBackStack(null)
         }
     }
 
@@ -154,6 +155,7 @@ class DetailsFragment : Fragment() {
         when (state) {
             is AppState.Success -> renderData(state.data)
             is AppState.ErrorState -> requireView().showText("Поломка")
+            else -> requireView().showText("Поломка")
         }
     }
 

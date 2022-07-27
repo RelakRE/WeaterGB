@@ -11,6 +11,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import ru.GB.weathergb.databinding.ActivityMainBinding
+import ru.GB.weathergb.domain.Weather
+import ru.GB.weathergb.model.room.HistoryEntity
+import ru.GB.weathergb.model.room.WeatherHistory
 import ru.GB.weathergb.model.sharedPreferences.WeatherSP
 import ru.GB.weathergb.view.fragments.CitiesListFragment
 import ru.GB.weathergb.view.fragments.DetailsFragment
@@ -32,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goToDetailsFragment() {
+        testAddToHistory(WeatherSP.getLastWeather()!!)
         supportFragmentManager.commit {
             add(
                 R.id.container,
@@ -78,4 +82,13 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         unregisterReceiver(receiver)
     }
+
+    private fun testAddToHistory(weather: Weather) {
+        Thread {
+            WeatherHistory.historyDao.insert(weather.toEntity())
+        }.start()
+    }
 }
+
+private fun Weather.toEntity(): HistoryEntity =
+    HistoryEntity(0, this.city.name, this.temperature, this.feelsLike, this.icon)

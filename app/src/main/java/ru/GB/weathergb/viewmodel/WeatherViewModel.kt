@@ -57,7 +57,6 @@ class WeatherViewModel(
         if (weather != null) {
             success(weather)
             WeatherSP.refreshLastWeather(weather)
-        }
-        else error()
+        } else error()
     }
 }

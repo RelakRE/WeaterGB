@@ -2,7 +2,9 @@ package ru.GB.weathergb.model.room
 
 import android.content.Context
 import androidx.room.*
-import java.time.LocalDate
+import ru.GB.weathergb.domain.City
+import ru.GB.weathergb.domain.Weather
+import kotlin.concurrent.thread
 
 object WeatherHistory {
 
@@ -25,6 +27,17 @@ object WeatherHistory {
         }
         historyDao = db!!.historyDao()
     }
+
+    fun fetchHistory(onResponse: (List<Weather>?) -> Unit) {
+        thread {
+            onResponse(
+                try {
+                    historyDao.all().map { it.toWeather() }
+                } catch (E: Exception) { //TODO: разобрать по типам
+                    null
+                })
+        }
+    }
 }
 
 @Database(entities = [HistoryEntity::class], version = 1, exportSchema = false)
@@ -39,10 +52,13 @@ data class HistoryEntity(
     val id: Long,
     val city: String,
     val temperature: Int,
-    val condition: String,
-    val icon: String,
-    val date: LocalDate
-)
+    val feelsLike: Int,
+    val icon: String?
+) {
+    fun toWeather() = Weather(City.buildCity(city), temperature, feelsLike, icon)
+    fun Weather.toEntity(): HistoryEntity =
+        HistoryEntity(0, this.city.name, this.temperature, this.feelsLike, this.icon)
+}
 
 @Dao
 interface HistoryDao {
@@ -65,3 +81,4 @@ interface HistoryDao {
     @Delete
     fun delete(entity: HistoryEntity)
 }
+

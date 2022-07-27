@@ -26,10 +26,11 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".view.testReceiver.BroadcastReceiver"
+        <receiver
+            android:name=".view.testReceiver.BroadcastReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="broadcastsender.message"/>
+                <action android:name="broadcastsender.message" />
             </intent-filter>
         </receiver>
     </application>
