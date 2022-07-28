@@ -1,13 +1,8 @@
 package ru.GB.weathergb
 
-import android.Manifest
 import android.Manifest.permission.READ_CONTACTS
-import android.content.*
 import android.content.pm.PackageManager
-import android.net.ConnectivityManager
-import android.net.ConnectivityManager.CONNECTIVITY_ACTION
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -26,7 +21,8 @@ import ru.GB.weathergb.view.fragments.DetailsFragment
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
-    lateinit var receiver: BroadcastReceiver
+    private val REQUEST_CODE = 42
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,13 +30,16 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        if (WeatherSP.haveTheLastWeatherSP()) goToDetailsFragment() else goToCitiesListFragment()
+//        if (WeatherSP.haveTheLastWeatherSP()) goToDetailsFragment() else goToCitiesListFragment()
+    }
 
-        initBroadcast()
+    override fun onStart() {
+        super.onStart()
+        checkPermission()
     }
 
     private fun goToDetailsFragment() {
-        testAddToHistory(WeatherSP.getLastWeather()!!)
+        WeatherSP.getLastWeather()?.also { testAddToHistory(it) }
         supportFragmentManager.commit {
             add(
                 R.id.container,
@@ -58,40 +57,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initBroadcast() {
-//        TODO() удалить после сдачи дз
-        receiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val noConnectivity =
-                    intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false)
-                if (noConnectivity) {
-                    onConnectionLost()
-                } else {
-                    onConnectionFound()
-                }
-            }
-        }
-        registerReceiver(receiver, IntentFilter(CONNECTIVITY_ACTION))
-    }
-
-    fun onConnectionLost() {
-        Toast.makeText(this, "Connection lost", Toast.LENGTH_LONG).show()
-    }
-
-    fun onConnectionFound() {
-        Toast.makeText(this, "Connection found", Toast.LENGTH_LONG).show()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(receiver)
-    }
-
     private fun testAddToHistory(weather: Weather) {
         Thread {
             WeatherHistory.historyDao.insert(weather.toEntity())
         }.start()
     }
+
+//    region Permissions
 
     private fun checkPermission() {
         when {
@@ -99,38 +71,58 @@ class MainActivity : AppCompatActivity() {
                 this,
                 READ_CONTACTS
             ) == PackageManager.PERMISSION_GRANTED -> {
-                Snackbar.make(
-                    this,
-                    binding.root,
-                    "Доступ к контактам на телефоне есть",
-                    Snackbar.LENGTH_LONG
-                ).show()
-                //Доступ к контактам на телефоне есть
+                showSnack("Доступ к контактам на телефоне есть")
+                getContacts()
             }
 
-            shouldShowRequestPermissionRationale(READ_CONTACTS) -> {
+            ActivityCompat.shouldShowRequestPermissionRationale(this, READ_CONTACTS) -> {
                 AlertDialog.Builder(this)
                     .setTitle("Доступ к контактам")
                     .setMessage("Контакты нужны для ...")
                     .setPositiveButton(
                         "Разрешить"
                     ) { _, _ ->
-                        Snackbar.make(
-                            this,
-                            binding.root,
-                            "Доступ дапли",
-                            Snackbar.LENGTH_LONG
-                        ).show()
+                        showSnack("Доступ дапли")
                         requestPermission()
                     }
-                    .setNegativeButton("Нет"){
-                        _,_ ->
-                    }
+                    .setNegativeButton("Нет") { dialog, _ ->
+                        showSnack("Доступ не хотят давать")
+                        dialog.dismiss()
+                    }.create().show()
             }
+
+            else -> requestPermission()
         }
     }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
+                getContacts()
+            } else {
+                AlertDialog.Builder(this)
+                    .setTitle("Доступ к контактам")
+                    .setMessage("Контакты не получены")
+                    .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
+                    .create()
+                    .show()
+            }
+        } else return
+    }
+
     private fun requestPermission() {
-        requestPermissions(this, arrayOf(READ_CONTACTS), 42)
+        requestPermissions(this, arrayOf(READ_CONTACTS), REQUEST_CODE)
+    }
+
+//    endregion
+
+    private fun showSnack(text: String) {
+        Snackbar.make(this, binding.root, text, Snackbar.LENGTH_LONG).show()
     }
 }
 
