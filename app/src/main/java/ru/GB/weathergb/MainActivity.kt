@@ -1,15 +1,20 @@
 package ru.GB.weathergb
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.Manifest
+import android.Manifest.permission.READ_CONTACTS
+import android.content.*
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.ConnectivityManager.CONNECTIVITY_ACTION
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.commit
+import com.google.android.material.snackbar.Snackbar
 import ru.GB.weathergb.databinding.ActivityMainBinding
 import ru.GB.weathergb.domain.Weather
 import ru.GB.weathergb.model.room.HistoryEntity
@@ -69,7 +74,6 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, IntentFilter(CONNECTIVITY_ACTION))
     }
 
-
     fun onConnectionLost() {
         Toast.makeText(this, "Connection lost", Toast.LENGTH_LONG).show()
     }
@@ -87,6 +91,46 @@ class MainActivity : AppCompatActivity() {
         Thread {
             WeatherHistory.historyDao.insert(weather.toEntity())
         }.start()
+    }
+
+    private fun checkPermission() {
+        when {
+            ContextCompat.checkSelfPermission(
+                this,
+                READ_CONTACTS
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                Snackbar.make(
+                    this,
+                    binding.root,
+                    "Доступ к контактам на телефоне есть",
+                    Snackbar.LENGTH_LONG
+                ).show()
+                //Доступ к контактам на телефоне есть
+            }
+
+            shouldShowRequestPermissionRationale(READ_CONTACTS) -> {
+                AlertDialog.Builder(this)
+                    .setTitle("Доступ к контактам")
+                    .setMessage("Контакты нужны для ...")
+                    .setPositiveButton(
+                        "Разрешить"
+                    ) { _, _ ->
+                        Snackbar.make(
+                            this,
+                            binding.root,
+                            "Доступ дапли",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                        requestPermission()
+                    }
+                    .setNegativeButton("Нет"){
+                        _,_ ->
+                    }
+            }
+        }
+    }
+    private fun requestPermission() {
+        requestPermissions(this, arrayOf(READ_CONTACTS), 42)
     }
 }
 

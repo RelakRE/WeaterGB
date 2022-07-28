@@ -26,7 +26,6 @@ import ru.GB.weathergb.viewmodel.WeatherViewModel
 
 class DetailsFragment : Fragment() {
 
-    //    private lateinit var weatherViewModel: WeatherViewModel
     private val weatherViewModel: WeatherViewModel by viewModels()
     private var _binding: FragmentDetailsBinding? = null
     private val binding: FragmentDetailsBinding
@@ -90,7 +89,6 @@ class DetailsFragment : Fragment() {
 
         initializeViewModel()
         bindButtons()
-//        addMenu()
 
         arguments?.getParcelable<Weather>(BUNDLE_WEATHER_EXTRA)
             ?.also { renderData(it) } //also { ::renderData }
@@ -125,7 +123,6 @@ class DetailsFragment : Fragment() {
     }
 
     private fun initializeViewModel() {
-//        weatherViewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
         weatherViewModel.getLiveData().observe(viewLifecycleOwner) {
             onChangeWeatherLiveData(it)
         }
@@ -174,11 +171,6 @@ class DetailsFragment : Fragment() {
             )
         }
 
-//        weather_icon.load("https://res.cloudinary.com/demo/video/upload/dog.png"){
-//            scale(Scale.FIT)
-//        }
-//        Glide.with(this).load("https://res.cloudinary.com/demo/video/upload/dog.png")
-//            .into(weather_icon);
     }
 
     private fun renderData(city: City) {
