@@ -8,8 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.GB.weathergb.databinding.FragmentHistoryBinding
+import ru.GB.weathergb.domain.Weather
 import ru.GB.weathergb.view.adapters.HistoryAdapter
-import ru.GB.weathergb.viewmodel.AppStateHistoryList
+import ru.GB.weathergb.viewmodel.BasicAppState
 import ru.GB.weathergb.viewmodel.HistoryViewModel
 
 class HistoryFragment : Fragment() {
@@ -40,14 +41,15 @@ class HistoryFragment : Fragment() {
         }
     }
 
-    private fun onChangeHistoryViewModel(state: AppStateHistoryList) {
+    private fun onChangeHistoryViewModel(state: BasicAppState) {
         when (state) {
-            is AppStateHistoryList.Success -> showHistory(state)
+            is BasicAppState.Success<*> -> showHistory(state)
+            else -> {}
         }
     }
 
-    private fun showHistory(state: AppStateHistoryList.Success) {
-        val list = state.data
+    private fun showHistory(state: BasicAppState.Success<*>) {
+        val list = state.data as List<Weather>
         binding.recyclerHistory.apply {
             adapter = HistoryAdapter(list)
             layoutManager = LinearLayoutManager(activity)

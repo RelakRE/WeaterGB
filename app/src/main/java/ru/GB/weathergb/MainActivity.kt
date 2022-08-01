@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-//        if (WeatherSP.haveTheLastWeatherSP()) goToDetailsFragment() else goToCitiesListFragment()
+        if (WeatherSP.haveTheLastWeatherSP()) goToDetailsFragment() else goToCitiesListFragment()
     }
 
     override fun onStart() {
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                 READ_CONTACTS
             ) == PackageManager.PERMISSION_GRANTED -> {
                 showSnack("Доступ к контактам на телефоне есть")
-                getContacts()
+                goToContacts()
             }
 
             ActivityCompat.shouldShowRequestPermissionRationale(this, READ_CONTACTS) -> {
@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
-                getContacts()
+                goToContacts()
             } else {
                 AlertDialog.Builder(this)
                     .setTitle("Доступ к контактам")
@@ -123,6 +123,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun showSnack(text: String) {
         Snackbar.make(this, binding.root, text, Snackbar.LENGTH_LONG).show()
+    }
+
+    fun goToContacts(){
+
     }
 }
 

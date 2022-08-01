@@ -77,8 +77,9 @@ class DetailsFragment : Fragment() {
     private fun configToolbar() {
         binding.toolbarDetails.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.showList -> goToListFragment()
+                R.id.show_list -> goToListFragment()
                 R.id.show_history -> goToHistoryFragment()
+                R.id.show_contacts -> goToContacts()
             }
             return@setOnMenuItemClickListener true
         }
@@ -117,6 +118,16 @@ class DetailsFragment : Fragment() {
             replace(
                 R.id.container,
                 HistoryFragment()
+            )
+                .addToBackStack(null)
+        }
+    }
+
+    private fun goToContacts() {
+        requireActivity().supportFragmentManager.commit {
+            replace(
+                R.id.container,
+                ContactsFragment()
             )
                 .addToBackStack(null)
         }

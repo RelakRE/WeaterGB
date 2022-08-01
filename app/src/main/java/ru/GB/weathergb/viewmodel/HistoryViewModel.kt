@@ -5,35 +5,29 @@ import androidx.lifecycle.ViewModel
 import ru.GB.weathergb.domain.Weather
 import ru.GB.weathergb.model.room.WeatherHistory
 
-sealed class AppStateHistoryList {
-    object DefaultState : AppStateHistoryList()
-    object LoadingState : AppStateHistoryList()
-    class Success(val data: List<Weather>) : AppStateHistoryList()
-    object ErrorState : AppStateHistoryList()
-}
 
 class HistoryViewModel(
-    private val historyLD: MutableLiveData<AppStateHistoryList> = MutableLiveData<AppStateHistoryList>()
+    private val historyLD: MutableLiveData<BasicAppState> = MutableLiveData<BasicAppState>()
 ) : ViewModel() {
 
     fun getLiveData() = historyLD
 
-    var currentState: AppStateHistoryList = AppStateHistoryList.DefaultState
+    var currentState: BasicAppState = BasicAppState.DefaultState
 
     fun fetch() {
-        currentState = AppStateHistoryList.LoadingState
+        currentState = BasicAppState.LoadingState
         historyLD.postValue(currentState)
         WeatherHistory.fetchHistory { historyList -> parseRoomAnswer(historyList) }
 
     }
 
     fun error() {
-        currentState = AppStateHistoryList.ErrorState
+        currentState = BasicAppState.ErrorState
         historyLD.postValue(currentState)
     }
 
     private fun success(historyList: List<Weather>) {
-        currentState = AppStateHistoryList.Success(historyList)
+        currentState = BasicAppState.Success(historyList)
         historyLD.postValue(currentState)
     }
 

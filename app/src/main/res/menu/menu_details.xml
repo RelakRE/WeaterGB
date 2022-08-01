@@ -3,12 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/showList"
+        android:id="@+id/show_list"
         android:icon="@drawable/ic_baseline_menu_24"
         android:title="@string/show_list"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/show_history"
         android:title="@string/history"
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/show_contacts"
+        android:title="@string/Контакты"
         app:showAsAction="withText" />
 </menu>
