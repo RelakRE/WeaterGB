@@ -1,20 +1,18 @@
 package ru.GB.weathergb
 
+import android.Manifest.permission.CALL_PHONE
 import android.Manifest.permission.READ_CONTACTS
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityCompat.requestPermissions
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.commit
-import com.google.android.material.snackbar.Snackbar
 import ru.GB.weathergb.databinding.ActivityMainBinding
 import ru.GB.weathergb.domain.Weather
 import ru.GB.weathergb.model.room.HistoryEntity
 import ru.GB.weathergb.model.room.WeatherHistory
 import ru.GB.weathergb.model.sharedPreferences.WeatherSP
+import ru.GB.weathergb.utils.Permissions
 import ru.GB.weathergb.view.fragments.CitiesListFragment
 import ru.GB.weathergb.view.fragments.DetailsFragment
 
@@ -35,7 +33,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        checkPermission()
+        Permissions.checkPermission(
+            arrayOf(READ_CONTACTS, CALL_PHONE),
+            this
+        )
     }
 
     private fun goToDetailsFragment() {
@@ -63,38 +64,6 @@ class MainActivity : AppCompatActivity() {
         }.start()
     }
 
-//    region Permissions
-
-    private fun checkPermission() {
-        when {
-            ContextCompat.checkSelfPermission(
-                this,
-                READ_CONTACTS
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                showSnack("Доступ к контактам на телефоне есть")
-                goToContacts()
-            }
-
-            ActivityCompat.shouldShowRequestPermissionRationale(this, READ_CONTACTS) -> {
-                AlertDialog.Builder(this)
-                    .setTitle("Доступ к контактам")
-                    .setMessage("Контакты нужны для ...")
-                    .setPositiveButton(
-                        "Разрешить"
-                    ) { _, _ ->
-                        showSnack("Доступ дапли")
-                        requestPermission()
-                    }
-                    .setNegativeButton("Нет") { dialog, _ ->
-                        showSnack("Доступ не хотят давать")
-                        dialog.dismiss()
-                    }.create().show()
-            }
-
-            else -> requestPermission()
-        }
-    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -102,31 +71,15 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
-                goToContacts()
-            } else {
+            if (grantResults.isNotEmpty() && !grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
                 AlertDialog.Builder(this)
-                    .setTitle("Доступ к контактам")
-                    .setMessage("Контакты не получены")
+                    .setTitle("Контакты не получены")
+                    .setMessage("Страница с контактами будет пустая.")
                     .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
                     .create()
                     .show()
             }
         } else return
-    }
-
-    private fun requestPermission() {
-        requestPermissions(this, arrayOf(READ_CONTACTS), REQUEST_CODE)
-    }
-
-//    endregion
-
-    private fun showSnack(text: String) {
-        Snackbar.make(this, binding.root, text, Snackbar.LENGTH_LONG).show()
-    }
-
-    fun goToContacts(){
-
     }
 }
 
