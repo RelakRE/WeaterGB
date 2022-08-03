@@ -1,5 +1,6 @@
 package ru.GB.weathergb
 
+import android.Manifest
 import android.Manifest.permission.CALL_PHONE
 import android.Manifest.permission.READ_CONTACTS
 import android.content.pm.PackageManager
@@ -20,6 +21,8 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     private val REQUEST_CODE = 42
+    val REQUIRED_PERMISSIONS =
+        arrayOf(READ_CONTACTS, CALL_PHONE, Manifest.permission.ACCESS_FINE_LOCATION)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         Permissions.checkPermission(
-            arrayOf(READ_CONTACTS, CALL_PHONE),
+            REQUIRED_PERMISSIONS,
             this
         )
     }
@@ -73,15 +76,28 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE) {
             if (grantResults.isNotEmpty() && !grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
                 AlertDialog.Builder(this)
-                    .setTitle("Контакты не получены")
-                    .setMessage("Страница с контактами будет пустая.")
+                    .setTitle("Не все разрешения получены")
+                    .setMessage("Зайдите в настройки приложения и добавьте разрешения.")
                     .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
                     .create()
                     .show()
             }
         } else return
     }
-}
 
-private fun Weather.toEntity(): HistoryEntity =
-    HistoryEntity(0, this.city.name, this.temperature, this.feelsLike, this.icon)
+    private fun showDialog(title: String, message: String) {
+        this?.let {
+            AlertDialog.Builder(it)
+                .setTitle(title)
+                .setMessage(message)
+                .setNegativeButton(getString(R.string.dialog_button_close)) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .create()
+                .show()
+        }
+    }
+
+    private fun Weather.toEntity(): HistoryEntity =
+        HistoryEntity(0, this.city.name, this.temperature, this.feelsLike, this.icon)
+}

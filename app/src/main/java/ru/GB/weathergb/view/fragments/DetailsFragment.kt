@@ -142,10 +142,7 @@ class DetailsFragment : Fragment() {
     private fun bindButtons() {
         with(binding)
         {
-            buttonMoscow.setOnClickListener { weatherViewModel.fetch(City.buildCity("Москва")) }
-            buttonSpiderMan.setOnClickListener {
-                replaceFragmentWith(DetailsFilmFragment())
-            }
+            showCityOnMap.setOnClickListener {  }
         }
     }
 

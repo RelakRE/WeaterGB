@@ -10,4 +10,6 @@
     <string name="show_list">Показать список</string>
     <string name="history">История</string>
     <string name="Контакты">Контакты</string>
+    <string name="dialog_button_close">Закрыть</string>
+    <string name="show_city_on_map">Показать город на карте</string>
 </resources>
