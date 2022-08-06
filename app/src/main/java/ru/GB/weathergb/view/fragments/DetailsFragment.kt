@@ -80,6 +80,7 @@ class DetailsFragment : Fragment() {
                 R.id.show_list -> goToListFragment()
                 R.id.show_history -> goToHistoryFragment()
                 R.id.show_contacts -> goToContacts()
+                R.id.show_map -> goToMap()
             }
             return@setOnMenuItemClickListener true
         }
@@ -123,6 +124,16 @@ class DetailsFragment : Fragment() {
         }
     }
 
+    private fun goToMap() {
+        requireActivity().supportFragmentManager.commit {
+            replace(
+                R.id.container,
+                MapsFragment()
+            )
+                .addToBackStack(null)
+        }
+    }
+
     private fun goToContacts() {
         requireActivity().supportFragmentManager.commit {
             replace(
@@ -142,7 +153,7 @@ class DetailsFragment : Fragment() {
     private fun bindButtons() {
         with(binding)
         {
-            showCityOnMap.setOnClickListener {  }
+            showCityOnMap.setOnClickListener { }
         }
     }
 

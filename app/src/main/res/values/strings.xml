@@ -12,4 +12,5 @@
     <string name="Контакты">Контакты</string>
     <string name="dialog_button_close">Закрыть</string>
     <string name="show_city_on_map">Показать город на карте</string>
+    <string name="show_map">Показать карту</string>
 </resources>

@@ -15,4 +15,8 @@
         android:id="@+id/show_contacts"
         android:title="@string/Контакты"
         app:showAsAction="withText" />
+    <item
+        android:id="@+id/show_map"
+        android:title="@string/show_map"
+        app:showAsAction="withText" />
 </menu>
