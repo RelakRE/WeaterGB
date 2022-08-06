@@ -1,6 +1,7 @@
 package ru.GB.weathergb
 
 import android.app.Application
+import ru.GB.weathergb.model.contacts.Contacts
 import ru.GB.weathergb.model.retrofit.WeatherRetrofit
 import ru.GB.weathergb.model.room.WeatherHistory
 import ru.GB.weathergb.model.sharedPreferences.WeatherSP

@@ -22,6 +22,8 @@ class WeatherViewModel(
     var currentState: AppState = DefaultState
         private set
 
+    var currentCity: City? = null
+
     fun getLiveData() = stateLiveData
 
     fun fetch(city: City) {

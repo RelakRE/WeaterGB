@@ -16,6 +16,7 @@ import androidx.fragment.app.viewModels
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_details.*
+import kotlinx.android.synthetic.main.fragment_maps.*
 import ru.GB.weathergb.R
 import ru.GB.weathergb.databinding.FragmentDetailsBinding
 import ru.GB.weathergb.domain.City
@@ -105,7 +106,7 @@ class DetailsFragment : Fragment() {
             }
     }
 
-    private fun goToListFragment() {
+    private fun goToListFragment(onResponse: (() -> Unit)? = null) {
         requireActivity().supportFragmentManager.commit {
             replace(
                 R.id.container,
@@ -130,7 +131,7 @@ class DetailsFragment : Fragment() {
                 R.id.container,
                 MapsFragment()
             )
-                .addToBackStack(null)
+            addToBackStack(null)
         }
     }
 
@@ -153,8 +154,25 @@ class DetailsFragment : Fragment() {
     private fun bindButtons() {
         with(binding)
         {
-            showCityOnMap.setOnClickListener { }
+            showCityOnMap.setOnClickListener {
+                weatherViewModel.currentCity?.also { city ->
+                    showLocation(city.lon, city.lat)
+                }
+            }
         }
+    }
+
+    private fun showLocation(lon: Double, lat: Double) {
+        val mapBuilder = MapsFragment.Builder()
+        mapBuilder.setLocation(lon, lat)
+
+        mapBuilder.build().also {
+            requireActivity().supportFragmentManager.commit{
+                replace(R.id.container, it)
+                addToBackStack(null)
+            }
+        }
+
     }
 
     private fun replaceFragmentWith(fragment: Fragment) {
@@ -190,6 +208,8 @@ class DetailsFragment : Fragment() {
             )
         }
 
+        weatherViewModel.currentCity = weather.city
+
     }
 
     private fun renderData(city: City) {
@@ -203,6 +223,7 @@ class DetailsFragment : Fragment() {
             else -> uploadWeather(city)
         }
 
+        weatherViewModel.currentCity = city
     }
 
     //region extensions

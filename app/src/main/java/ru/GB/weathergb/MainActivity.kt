@@ -73,20 +73,52 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
         if (requestCode == REQUEST_CODE) {
             if (grantResults.isNotEmpty() && !grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                AlertDialog.Builder(this)
-                    .setTitle("Не все разрешения получены")
-                    .setMessage("Зайдите в настройки приложения и добавьте разрешения.")
-                    .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
-                    .create()
-                    .show()
+
+                permissions.indexOf(READ_CONTACTS).also {
+                    if (it >= 0 && grantResults[it] == PackageManager.PERMISSION_DENIED) {
+                        AlertDialog.Builder(this)
+                            .setTitle("Не получены разрешения на контакты.")
+                            .setMessage("Зайдите в настройки приложения и добавьте разрешения.")
+                            .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
+                            .create()
+                            .show()
+                        return
+                    }
+                }
+
+                permissions.indexOf(CALL_PHONE).also {
+                    if (it >= 0 && grantResults[it] == PackageManager.PERMISSION_DENIED) {
+                        AlertDialog.Builder(this)
+                            .setTitle("Не получены разрешения на контакты.")
+                            .setMessage("Зайдите в настройки приложения и добавьте разрешения.")
+                            .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
+                            .create()
+                            .show()
+                        return
+                    }
+                }
+
+                permissions.indexOf(Manifest.permission.ACCESS_FINE_LOCATION).also {
+                    if (it >= 0 && grantResults[it] == PackageManager.PERMISSION_DENIED) {
+                        AlertDialog.Builder(this)
+                            .setTitle("Разрешения геолокации")
+                            .setMessage("Зайдите в настройки приложения и добавьте разрешения.")
+                            .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
+                            .create()
+                            .show()
+                        return
+                    }
+                }
             }
-        } else return
+        }
     }
 
+
     private fun showDialog(title: String, message: String) {
-        this?.let {
+        this.let {
             AlertDialog.Builder(it)
                 .setTitle(title)
                 .setMessage(message)

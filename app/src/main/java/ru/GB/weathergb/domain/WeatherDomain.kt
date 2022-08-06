@@ -21,13 +21,13 @@ data class City(
 
     companion object {
         fun buildCity(cityName: String?): City {
-            return if (cityName == "Москва") City("Москва", 55.4507, 37.3656)
+            return if (cityName == "Москва") City("Москва",  55.75222, 37.61556)
             else City("no name", 1.0, 2.0)
         }
     }
 }
 
-private fun getDefaultCity() = City("Москва", 55.755826, 37.617299900000035)
+private fun getDefaultCity() = City("Москва", 55.75222, 37.61556)
 
 // как бы основная функция, которая получает название города, а возвращает погоду или Null
 fun getWeatherDomain(CityName: String): Weather? {
