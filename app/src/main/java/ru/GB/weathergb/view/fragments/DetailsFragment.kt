@@ -16,12 +16,12 @@ import androidx.fragment.app.viewModels
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_details.*
-import kotlinx.android.synthetic.main.fragment_maps.*
 import ru.GB.weathergb.R
 import ru.GB.weathergb.databinding.FragmentDetailsBinding
 import ru.GB.weathergb.domain.City
 import ru.GB.weathergb.domain.Weather
 import ru.GB.weathergb.model.repositories.WeatherRepo
+import ru.GB.weathergb.utils.Permissions
 import ru.GB.weathergb.viewmodel.AppState
 import ru.GB.weathergb.viewmodel.WeatherViewModel
 
@@ -33,6 +33,7 @@ class DetailsFragment : Fragment() {
         get() = _binding!!
 
     private var uploadReceiver: BroadcastReceiver? = null
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -126,12 +127,24 @@ class DetailsFragment : Fragment() {
     }
 
     private fun goToMap() {
-        requireActivity().supportFragmentManager.commit {
-            replace(
-                R.id.container,
-                MapsFragment()
+
+        if (Permissions.permissionReceived(
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                requireContext()
             )
-            addToBackStack(null)
+        ) {
+            requireActivity().supportFragmentManager.commit {
+                replace(
+                    R.id.container,
+                    GeolocationFragment()
+                )
+                addToBackStack(null)
+            }
+        } else {
+            Permissions.requestPermission(
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                requireActivity()
+            )
         }
     }
 
@@ -163,16 +176,27 @@ class DetailsFragment : Fragment() {
     }
 
     private fun showLocation(lon: Double, lat: Double) {
-        val mapBuilder = MapsFragment.Builder()
-        mapBuilder.setLocation(lon, lat)
 
-        mapBuilder.build().also {
-            requireActivity().supportFragmentManager.commit{
-                replace(R.id.container, it)
-                addToBackStack(null)
+        if (Permissions.permissionReceived(
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                requireContext()
+            )
+        ) {
+            val mapBuilder = MapsFragment.Builder()
+            mapBuilder.setLocation(lon, lat)
+
+            mapBuilder.build().also {
+                requireActivity().supportFragmentManager.commit {
+                    replace(R.id.container, it)
+                    addToBackStack(null)
+                }
             }
+        } else {
+            Permissions.requestPermission(
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                requireActivity()
+            )
         }
-
     }
 
     private fun replaceFragmentWith(fragment: Fragment) {

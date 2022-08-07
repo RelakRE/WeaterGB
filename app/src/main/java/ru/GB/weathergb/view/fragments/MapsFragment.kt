@@ -9,8 +9,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.android.synthetic.main.fragment_maps.*
 import ru.GB.weathergb.R
 
 class MapsFragment() : Fragment() {
@@ -28,10 +26,10 @@ class MapsFragment() : Fragment() {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
-        val sydney = LatLng(startLat, startLon)
+        val location = LatLng(startLat, startLon)
 //        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 10f))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(location))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10f))
     }
 
     private constructor(builder: Builder) : this() {

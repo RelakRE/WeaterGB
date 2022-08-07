@@ -113,7 +113,6 @@ class MainActivity : AppCompatActivity() {
 
         if (grantResults.isNotEmpty() && !grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
 
-
             permissions.indexOf(Manifest.permission.ACCESS_FINE_LOCATION).also {
                 if (it >= 0 && grantResults[it] == PackageManager.PERMISSION_DENIED) {
                     AlertDialog.Builder(this)
