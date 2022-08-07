@@ -41,6 +41,13 @@ class CitiesListFragment : Fragment() {
                 })
             layoutManager = LinearLayoutManager(activity)
         }
+        binding.fabAddMyLocation.setOnClickListener {
+            addCurrentLocation()
+        }
+    }
+
+    private fun addCurrentLocation() {
+
     }
 
     override fun onDestroyView() {
@@ -60,6 +67,15 @@ class CitiesListFragment : Fragment() {
             )
             addToBackStack(null)
         }
+    }
+
+    fun addCity(city: City) {
+        binding.recyclerCities.addView(
+            layoutInflater.inflate(
+                R.layout.recycker_item_city,
+                binding.recyclerCities
+            )
+        )
     }
 
 }

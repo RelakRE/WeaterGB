@@ -5,7 +5,11 @@ import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.provider.ContactsContract
+import androidx.fragment.app.Fragment
+import ru.GB.weathergb.MainActivity
+import ru.GB.weathergb.R
 import ru.GB.weathergb.utils.Permissions
+import ru.GB.weathergb.view.fragments.ContactsFragment
 
 class Contacts(private val context: Context, private val activity: Activity) {
 // TODO: сделать синглтоном, собирать в :Application, Только что с премишнами делать непонятно
@@ -15,7 +19,16 @@ class Contacts(private val context: Context, private val activity: Activity) {
         Manifest.permission.CALL_PHONE
     )
 
-    fun getContacts(){
+    fun getContacts() {
+        if (Permissions.permissionReceived(requiredPermissions, activity)) {
+            val currentFragment =
+                (activity as MainActivity).supportFragmentManager.findFragmentById(
+                    R.id.container
+                ) as Fragment
+            if (currentFragment is ContactsFragment) {
+                currentFragment.addContacts(Contacts(context, activity).queryContacts())
+            }
+        }
         Permissions.requestPermission(requiredPermissions, activity)
     }
 
