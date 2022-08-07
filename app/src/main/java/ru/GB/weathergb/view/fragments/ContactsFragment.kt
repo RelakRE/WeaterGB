@@ -37,18 +37,7 @@ class ContactsFragment : Fragment() {
     }
 
     private fun initContacts() {
-        Contacts(requireContext(), requireActivity()).getContacts().forEach { contact ->
-            binding.containerForContacts.addView(
-                layoutInflater.inflate(
-                    R.layout.item_contact,
-                    binding.containerForContacts, false
-                ).apply {
-                    contact_name.text = contact.key
-                    contact_number.text = contact.value
-                    setOnClickListener { intentCall(contact_number.text.toString()) }
-                }
-            )
-        }
+        Contacts(requireContext(), requireActivity()).getContacts()
     }
 
 
@@ -60,5 +49,18 @@ class ContactsFragment : Fragment() {
         })
     }
 
-
+    fun addContacts(contacts: Map<String, String>){
+        contacts.forEach{
+            binding.containerForContacts.addView(
+                layoutInflater.inflate(
+                    R.layout.item_contact,
+                    binding.containerForContacts, false
+                ).apply {
+                    contact_name.text = it.key
+                    contact_number.text = it.value
+                    setOnClickListener { intentCall(contact_number.text.toString()) }
+                }
+            )
+        }
+    }
 }

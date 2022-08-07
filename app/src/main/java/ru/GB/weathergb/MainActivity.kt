@@ -7,14 +7,17 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import ru.GB.weathergb.databinding.ActivityMainBinding
 import ru.GB.weathergb.domain.Weather
+import ru.GB.weathergb.model.contacts.Contacts
 import ru.GB.weathergb.model.room.HistoryEntity
 import ru.GB.weathergb.model.room.WeatherHistory
 import ru.GB.weathergb.model.sharedPreferences.WeatherSP
 import ru.GB.weathergb.utils.Permissions
 import ru.GB.weathergb.view.fragments.CitiesListFragment
+import ru.GB.weathergb.view.fragments.ContactsFragment
 import ru.GB.weathergb.view.fragments.DetailsFragment
 
 class MainActivity : AppCompatActivity() {
@@ -36,10 +39,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        Permissions.checkPermission(
-            REQUIRED_PERMISSIONS,
-            this
-        )
     }
 
     private fun goToDetailsFragment() {
@@ -74,48 +73,60 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if (requestCode == REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && !grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+        val currentFrag =
+            supportFragmentManager.findFragmentById(R.id.container) as Fragment
 
-                permissions.indexOf(READ_CONTACTS).also {
-                    if (it >= 0 && grantResults[it] == PackageManager.PERMISSION_DENIED) {
-                        AlertDialog.Builder(this)
-                            .setTitle("Не получены разрешения на контакты.")
-                            .setMessage("Зайдите в настройки приложения и добавьте разрешения.")
-                            .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
-                            .create()
-                            .show()
-                        return
-                    }
+        if (currentFrag is ContactsFragment) {
+
+            val contactsImpl = Contacts(this, this)
+
+            permissions.indexOf(READ_CONTACTS).also {
+                if (it >= 0 && grantResults[it] == PackageManager.PERMISSION_DENIED) {
+                    AlertDialog.Builder(this)
+                        .setTitle("Не получены разрешения на контакты.")
+                        .setMessage("Зайдите в настройки приложения и добавьте разрешения.")
+                        .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
+                        .create()
+                        .show()
+                    return
                 }
+            }
 
-                permissions.indexOf(CALL_PHONE).also {
-                    if (it >= 0 && grantResults[it] == PackageManager.PERMISSION_DENIED) {
-                        AlertDialog.Builder(this)
-                            .setTitle("Не получены разрешения на контакты.")
-                            .setMessage("Зайдите в настройки приложения и добавьте разрешения.")
-                            .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
-                            .create()
-                            .show()
-                        return
-                    }
+            permissions.indexOf(CALL_PHONE).also {
+                if (it >= 0 && grantResults[it] == PackageManager.PERMISSION_DENIED) {
+                    AlertDialog.Builder(this)
+                        .setTitle("Не получены разрешения на контакты.")
+                        .setMessage("Зайдите в настройки приложения и добавьте разрешения.")
+                        .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
+                        .create()
+                        .show()
+                    return
                 }
+            }
 
-                permissions.indexOf(Manifest.permission.ACCESS_FINE_LOCATION).also {
-                    if (it >= 0 && grantResults[it] == PackageManager.PERMISSION_DENIED) {
-                        AlertDialog.Builder(this)
-                            .setTitle("Разрешения геолокации")
-                            .setMessage("Зайдите в настройки приложения и добавьте разрешения.")
-                            .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
-                            .create()
-                            .show()
-                        return
-                    }
+            currentFrag.addContacts(
+                if (Permissions.permissionReceived(contactsImpl.requiredPermissions, this)
+                ) contactsImpl.queryContacts()
+                else emptyMap()
+            )
+        }
+
+        if (grantResults.isNotEmpty() && !grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+
+
+            permissions.indexOf(Manifest.permission.ACCESS_FINE_LOCATION).also {
+                if (it >= 0 && grantResults[it] == PackageManager.PERMISSION_DENIED) {
+                    AlertDialog.Builder(this)
+                        .setTitle("Разрешения геолокации")
+                        .setMessage("Зайдите в настройки приложения и добавьте разрешения.")
+                        .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
+                        .create()
+                        .show()
+                    return
                 }
             }
         }
     }
-
 
     private fun showDialog(title: String, message: String) {
         this.let {

@@ -15,20 +15,11 @@ class Contacts(private val context: Context, private val activity: Activity) {
         Manifest.permission.CALL_PHONE
     )
 
-    fun getContacts(): Map<String, String> {
-
+    fun getContacts(){
         Permissions.requestPermission(requiredPermissions, activity)
-
-        return if (Permissions.permissionReceived(
-                requiredPermissions,
-                context
-            )
-        ) queryContacts() else
-            emptyMap()
-
     }
 
-    private fun queryContacts(): Map<String, String> {
+    fun queryContacts(): Map<String, String> {
 
         val contacts = emptyMap<String, String>().toMutableMap()
 
