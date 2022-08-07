@@ -1,9 +1,16 @@
 package ru.GB.weathergb.view.fragments
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Geocoder
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,7 +40,7 @@ class CitiesListFragment : Fragment() {
 
         val list = getCitiesList()
         binding.recyclerCities.apply {
-            adapter = RecyclerCitiesAdapter(list,
+            adapter = RecyclerCitiesAdapter(list.toMutableList(),
                 object : ItemActionRecycler {
                     override fun clickOnItem(city: City) {
                         openCityWeather(city)
@@ -44,10 +51,6 @@ class CitiesListFragment : Fragment() {
         binding.fabAddMyLocation.setOnClickListener {
             addCurrentLocation()
         }
-    }
-
-    private fun addCurrentLocation() {
-
     }
 
     override fun onDestroyView() {
@@ -69,13 +72,80 @@ class CitiesListFragment : Fragment() {
         }
     }
 
-    fun addCity(city: City) {
-        binding.recyclerCities.addView(
-            layoutInflater.inflate(
-                R.layout.recycker_item_city,
-                binding.recyclerCities
-            )
-        )
+    private fun addCurrentLocation() {
+        getLocation()
     }
+
+
+    fun addCity(city: City) {
+        (binding.recyclerCities.adapter as RecyclerCitiesAdapter).apply {
+            dataList.add(city)
+            notifyItemInserted(dataList.size - 1)
+            notifyDataSetChanged()
+        }
+//
+//        binding.recyclerCities.addView(
+//            layoutInflater.inflate(
+//                R.layout.recycker_item_city,
+//                binding.recyclerCities
+//            )
+//        )
+//        binding.recyclerCities.adapter?.notifyDataSetChanged()
+    }
+
+    private fun getLocation() {
+        requireActivity().let { context ->
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) ==
+                PackageManager.PERMISSION_GRANTED
+            ) {
+// Получить менеджер геолокаций
+                val locationManager =
+                    context.getSystemService(Context.LOCATION_SERVICE) as
+                            LocationManager
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    val provider =
+                        locationManager.getProvider(LocationManager.GPS_PROVIDER)
+                    provider?.let {
+
+                        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.let {
+                            getAddressAsync(context, it)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getAddressAsync(
+        context: Context,
+        location: Location
+    ) {
+        val geoCoder = Geocoder(context)
+        Thread {
+            try {
+                val addresses = geoCoder.getFromLocation(
+                    location.latitude,
+                    location.longitude,
+                    1
+                )
+                if (addresses.isNotEmpty()) {
+                    addCity(
+                        City(
+                            addresses[0].getAddressLine(0),
+                            location.latitude,
+                            location.longitude
+                        )
+                    )
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.start()
+    }
+
 
 }

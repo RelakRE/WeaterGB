@@ -7,7 +7,7 @@ import ru.GB.weathergb.databinding.RecyckerItemCityBinding
 import ru.GB.weathergb.domain.City
 
 class RecyclerCitiesAdapter(
-    private val dataList: List<City>,
+    val dataList: MutableList<City>,
     private val callbacks: ItemActionRecycler
 ) : RecyclerView.Adapter<RecyclerCitiesAdapter.Holder>() {
 

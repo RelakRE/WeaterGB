@@ -241,13 +241,13 @@ class DetailsFragment : Fragment() {
             cityName.text = city.name
             cityCoordinates.text = "${city.lat}/${city.lon}"
         }
-
-        when (REPO_TYPE) {
-            "BRO" -> return
-            else -> uploadWeather(city)
-        }
-
-        weatherViewModel.currentCity = city
+//
+//        when (REPO_TYPE) {
+//            "BRO" -> return
+//            else -> uploadWeather(city)
+//        }
+//
+//        weatherViewModel.currentCity = city
     }
 
     //region extensions

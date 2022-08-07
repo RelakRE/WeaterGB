@@ -14,9 +14,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.android.synthetic.main.fragment_maps.*
 import ru.GB.weathergb.R
-import ru.GB.weathergb.databinding.FragmentDetailsBinding
 import ru.GB.weathergb.databinding.FragmentGeolocationBinding
 
 
@@ -45,7 +43,7 @@ class GeolocationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentGeolocationBinding.inflate(inflater)
+        _binding = FragmentGeolocationBinding.inflate(inflater, container, false)
         return binding.root
     }
 
