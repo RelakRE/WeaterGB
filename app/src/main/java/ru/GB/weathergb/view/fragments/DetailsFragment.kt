@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -100,10 +102,10 @@ class DetailsFragment : Fragment() {
         arguments?.getParcelable<City>(BUNDLE_CITY_EXTRA)
             ?.also {
                 renderData(it)
-                when (REPO_TYPE) {
-                    "BRO" -> BroadcastReceiverRepoImpl(it)
-                    else -> weatherViewModel.fetch(it)
-                }
+//                when (REPO_TYPE) {
+//                    "BRO" -> BroadcastReceiverRepoImpl(it)
+//                    else -> weatherViewModel.fetch(it)
+//                }
             }
     }
 
@@ -237,15 +239,16 @@ class DetailsFragment : Fragment() {
     }
 
     private fun renderData(city: City) {
+
         with(binding) {
             cityName.text = city.name
             cityCoordinates.text = "${city.lat}/${city.lon}"
         }
-//
-//        when (REPO_TYPE) {
-//            "BRO" -> return
-//            else -> uploadWeather(city)
-//        }
+
+        when (REPO_TYPE) {
+            "BRO" -> return
+            else -> uploadWeather(city)
+        }
 //
 //        weatherViewModel.currentCity = city
     }

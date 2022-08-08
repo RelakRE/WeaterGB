@@ -3,13 +3,18 @@ package ru.GB.weathergb.view.fragments
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.motion.widget.Debug.getLocation
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -78,10 +83,11 @@ class CitiesListFragment : Fragment() {
 
 
     fun addCity(city: City) {
-        (binding.recyclerCities.adapter as RecyclerCitiesAdapter).apply {
-            dataList.add(city)
-            notifyItemInserted(dataList.size - 1)
-            notifyDataSetChanged()
+        Handler(Looper.getMainLooper()).post {
+            (binding.recyclerCities.adapter as RecyclerCitiesAdapter).apply {
+                dataList.add(city)
+                notifyItemInserted(dataList.size - 1)
+            }
         }
 //
 //        binding.recyclerCities.addView(
