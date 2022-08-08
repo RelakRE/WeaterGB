@@ -6,8 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.os.Looper
-import android.util.Log
+import android.text.TextUtils.replace
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -109,23 +108,12 @@ class DetailsFragment : Fragment() {
             }
     }
 
-    private fun goToListFragment(onResponse: (() -> Unit)? = null) {
-        requireActivity().supportFragmentManager.commit {
-            replace(
-                R.id.container,
-                CitiesListFragment()
-            )
-        }
+    private fun goToListFragment() {
+        replaceFragmentWith(CitiesListFragment())
     }
 
     private fun goToHistoryFragment() {
-        requireActivity().supportFragmentManager.commit {
-            replace(
-                R.id.container,
-                HistoryFragment()
-            )
-                .addToBackStack(null)
-        }
+        replaceFragmentWith(HistoryFragment())
     }
 
     private fun goToMap() {
@@ -135,13 +123,7 @@ class DetailsFragment : Fragment() {
                 requireContext()
             )
         ) {
-            requireActivity().supportFragmentManager.commit {
-                replace(
-                    R.id.container,
-                    GeolocationFragment()
-                )
-                addToBackStack(null)
-            }
+            replaceFragmentWith(GeolocationFragment())
         } else {
             Permissions.requestPermission(
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
@@ -151,13 +133,7 @@ class DetailsFragment : Fragment() {
     }
 
     private fun goToContacts() {
-        requireActivity().supportFragmentManager.commit {
-            replace(
-                R.id.container,
-                ContactsFragment()
-            )
-                .addToBackStack(null)
-        }
+        replaceFragmentWith(ContactsFragment())
     }
 
     private fun initializeViewModel() {
@@ -187,12 +163,8 @@ class DetailsFragment : Fragment() {
             val mapBuilder = MapsFragment.Builder()
             mapBuilder.setLocation(lon, lat)
 
-            mapBuilder.build().also {
-                requireActivity().supportFragmentManager.commit {
-                    replace(R.id.container, it)
-                    addToBackStack(null)
-                }
-            }
+            replaceFragmentWith(mapBuilder.build()
+            )
         } else {
             Permissions.requestPermission(
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
@@ -202,10 +174,10 @@ class DetailsFragment : Fragment() {
     }
 
     private fun replaceFragmentWith(fragment: Fragment) {
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.container, fragment)
-            .addToBackStack(null)
-            .commit()
+        requireActivity().supportFragmentManager.commit {
+            replace(R.id.container, fragment)
+                .addToBackStack(null)
+        }
     }
 
     private fun onChangeWeatherLiveData(state: AppState) {

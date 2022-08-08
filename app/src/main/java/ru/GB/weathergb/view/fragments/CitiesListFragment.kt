@@ -2,20 +2,20 @@ package ru.GB.weathergb.view.fragments
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
-import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.motion.widget.Debug.getLocation
-import androidx.core.content.ContextCompat
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -101,17 +101,11 @@ class CitiesListFragment : Fragment() {
 
     private fun getLocation() {
         requireActivity().let { context ->
-            if (ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) ==
-                PackageManager.PERMISSION_GRANTED
-            ) {
-// Получить менеджер геолокаций
+            if (checkPermissions()) {
                 val locationManager =
                     context.getSystemService(Context.LOCATION_SERVICE) as
                             LocationManager
-                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                if (isLocationEnabled(locationManager)) {
                     val provider =
                         locationManager.getProvider(LocationManager.GPS_PROVIDER)
                     provider?.let {
@@ -120,10 +114,29 @@ class CitiesListFragment : Fragment() {
                             getAddressAsync(context, it)
                         }
                     }
+                } else {
+                    Toast.makeText(requireContext(), "Включите GPS", Toast.LENGTH_LONG).show()
+                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    startActivity(intent)
                 }
             }
         }
     }
+
+
+    private fun checkPermissions(): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun isLocationEnabled(locationManager: LocationManager): Boolean {
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
+    }
+
 
     private fun getAddressAsync(
         context: Context,
@@ -140,7 +153,7 @@ class CitiesListFragment : Fragment() {
                 if (addresses.isNotEmpty()) {
                     addCity(
                         City(
-                            addresses[0].getAddressLine(0),
+                            addresses[0].locality,
                             location.latitude,
                             location.longitude
                         )
