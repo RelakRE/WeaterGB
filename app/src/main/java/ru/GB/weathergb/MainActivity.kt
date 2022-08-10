@@ -3,12 +3,17 @@ package ru.GB.weathergb
 import android.Manifest
 import android.Manifest.permission.CALL_PHONE
 import android.Manifest.permission.READ_CONTACTS
+import android.app.Notification
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import com.gb.k_2135_2136_2.lesson11.Notifications
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import ru.GB.weathergb.databinding.ActivityMainBinding
 import ru.GB.weathergb.domain.Weather
 import ru.GB.weathergb.model.contacts.Contacts
@@ -35,11 +40,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         if (WeatherSP.haveTheLastWeatherSP()) goToDetailsFragment() else goToCitiesListFragment()
+
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
 
     private fun goToDetailsFragment() {
         WeatherSP.getLastWeather()?.also { testAddToHistory(it) }
@@ -138,6 +141,17 @@ class MainActivity : AppCompatActivity() {
                 .create()
                 .show()
         }
+    }
+
+    private fun logToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("@@@", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+            val token = task.result
+            Log.d("@@@", token)
+        })
     }
 
     private fun Weather.toEntity(): HistoryEntity =
