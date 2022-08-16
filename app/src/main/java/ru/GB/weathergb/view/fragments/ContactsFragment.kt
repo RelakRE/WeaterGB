@@ -49,8 +49,8 @@ class ContactsFragment : Fragment() {
         })
     }
 
-    fun addContacts(contacts: Map<String, String>){
-        contacts.forEach{
+    fun addContacts(contacts: Map<String, String>) {
+        contacts.forEach {
             binding.containerForContacts.addView(
                 layoutInflater.inflate(
                     R.layout.item_contact,

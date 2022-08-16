@@ -89,14 +89,7 @@ class CitiesListFragment : Fragment() {
                 notifyItemInserted(dataList.size - 1)
             }
         }
-//
-//        binding.recyclerCities.addView(
-//            layoutInflater.inflate(
-//                R.layout.recycker_item_city,
-//                binding.recyclerCities
-//            )
-//        )
-//        binding.recyclerCities.adapter?.notifyDataSetChanged()
+
     }
 
     private fun getLocation() {
@@ -165,6 +158,4 @@ class CitiesListFragment : Fragment() {
             }
         }.start()
     }
-
-
 }

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils.replace
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,17 +94,13 @@ class DetailsFragment : Fragment() {
         initializeViewModel()
         bindButtons()
 
-        arguments?.getParcelable<Weather>(BUNDLE_WEATHER_EXTRA)
-            ?.also { renderData(it) } //also { ::renderData }
-
-        arguments?.getParcelable<City>(BUNDLE_CITY_EXTRA)
-            ?.also {
-                renderData(it)
-//                when (REPO_TYPE) {
-//                    "BRO" -> BroadcastReceiverRepoImpl(it)
-//                    else -> weatherViewModel.fetch(it)
-//                }
-            }
+        val bundleWeather = arguments?.getParcelable<Weather>(BUNDLE_WEATHER_EXTRA)
+        if (bundleWeather != null) {
+            renderData(bundleWeather)
+        } else {
+            arguments?.getParcelable<City>(BUNDLE_CITY_EXTRA)
+                ?.also { renderData(it) }
+        }
     }
 
     private fun goToListFragment() {
@@ -163,7 +158,8 @@ class DetailsFragment : Fragment() {
             val mapBuilder = MapsFragment.Builder()
             mapBuilder.setLocation(lon, lat)
 
-            replaceFragmentWith(mapBuilder.build()
+            replaceFragmentWith(
+                mapBuilder.build()
             )
         } else {
             Permissions.requestPermission(
@@ -221,8 +217,6 @@ class DetailsFragment : Fragment() {
             "BRO" -> return
             else -> uploadWeather(city)
         }
-//
-//        weatherViewModel.currentCity = city
     }
 
     //region extensions
@@ -238,13 +232,6 @@ class DetailsFragment : Fragment() {
         }
     }
 
-    private fun View.showText(text: String, pair: Pair<String, View.OnClickListener>) {
-        Snackbar.make(
-            this,
-            text,
-            Snackbar.LENGTH_LONG
-        ).setAction(pair.first, pair.second).show()
-    }
 
     private fun uploadWeather(city: City) {
         weatherViewModel.fetch(city)

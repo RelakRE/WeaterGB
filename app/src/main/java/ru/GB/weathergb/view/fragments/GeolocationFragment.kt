@@ -34,7 +34,6 @@ class GeolocationFragment : Fragment() {
         map = googleMap
 
         googleMap.uiSettings.isZoomControlsEnabled = true
-
         googleMap.isMyLocationEnabled = true
         googleMap.uiSettings.isMyLocationButtonEnabled = true
     }

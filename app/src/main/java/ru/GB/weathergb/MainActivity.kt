@@ -3,7 +3,6 @@ package ru.GB.weathergb
 import android.Manifest
 import android.Manifest.permission.CALL_PHONE
 import android.Manifest.permission.READ_CONTACTS
-import android.app.Notification
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -11,7 +10,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import com.gb.k_2135_2136_2.lesson11.Notifications
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import ru.GB.weathergb.databinding.ActivityMainBinding
@@ -85,24 +83,20 @@ class MainActivity : AppCompatActivity() {
 
             permissions.indexOf(READ_CONTACTS).also {
                 if (it >= 0 && grantResults[it] == PackageManager.PERMISSION_DENIED) {
-                    AlertDialog.Builder(this)
-                        .setTitle("Не получены разрешения на контакты.")
-                        .setMessage("Зайдите в настройки приложения и добавьте разрешения.")
-                        .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
-                        .create()
-                        .show()
+                    showAlertDialog(
+                        "Не получены разрешения на контакты.",
+                        "Зайдите в настройки приложения и добавьте разрешения."
+                    )
                     return
                 }
             }
 
             permissions.indexOf(CALL_PHONE).also {
                 if (it >= 0 && grantResults[it] == PackageManager.PERMISSION_DENIED) {
-                    AlertDialog.Builder(this)
-                        .setTitle("Не получены разрешения на контакты.")
-                        .setMessage("Зайдите в настройки приложения и добавьте разрешения.")
-                        .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
-                        .create()
-                        .show()
+                    showAlertDialog(
+                        "Не получены разрешения на контакты.",
+                        "Зайдите в настройки приложения и добавьте разрешения."
+                    )
                     return
                 }
             }
@@ -118,19 +112,17 @@ class MainActivity : AppCompatActivity() {
 
             permissions.indexOf(Manifest.permission.ACCESS_FINE_LOCATION).also {
                 if (it >= 0 && grantResults[it] == PackageManager.PERMISSION_DENIED) {
-                    AlertDialog.Builder(this)
-                        .setTitle("Разрешения геолокации")
-                        .setMessage("Зайдите в настройки приложения и добавьте разрешения.")
-                        .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
-                        .create()
-                        .show()
+                    showAlertDialog(
+                        "Разрешения геолокации",
+                        "Зайдите в настройки приложения и добавьте разрешения."
+                    )
                     return
                 }
             }
         }
     }
 
-    private fun showDialog(title: String, message: String) {
+    private fun showAlertDialog(title: String, message: String) {
         this.let {
             AlertDialog.Builder(it)
                 .setTitle(title)

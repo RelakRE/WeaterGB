@@ -14,13 +14,6 @@ android {
         viewBinding true
     }
 
-    buildTypes.each {
-        Properties properties = new Properties()
-        properties.load(project.rootProject.file("apikey.properties").newDataInputStream())
-        def apiKey = properties.getProperty("yandex_weather_api_key", "")
-        it.buildConfigField "String", "WEATHER_API_KEY", apiKey
-    }
-
     defaultConfig {
         applicationId "ru.GB.weathergb"
         minSdk 26
@@ -32,6 +25,12 @@ android {
     }
 
     buildTypes {
+        forEach {
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file("apikey.properties").newDataInputStream())
+            def apiKey = properties.getProperty("yandex_weather_api_key", "")
+            it.buildConfigField "String", "WEATHER_API_KEY", apiKey
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

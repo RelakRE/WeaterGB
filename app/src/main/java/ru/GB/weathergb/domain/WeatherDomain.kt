@@ -21,7 +21,7 @@ data class City(
 
     companion object {
         fun buildCity(cityName: String?): City {
-            return if (cityName == "Москва") City("Москва",  55.75222, 37.61556)
+            return if (cityName == "Москва") City("Москва", 55.75222, 37.61556)
             else City("no name", 1.0, 2.0)
         }
     }
